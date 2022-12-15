@@ -1,6 +1,7 @@
 package com.example.bankSoftware.controllers;
 
 import com.example.bankSoftware.Config;
+import com.example.bankSoftware.dtos.ResponseDto;
 import com.example.bankSoftware.services.AccountService;
 import com.example.bankSoftware.services.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,14 +24,20 @@ public class BaseController {
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public String handle(){
-        return "There is no such element in our data :(";
+    public ResponseDto handle(){
+        return ResponseDto.builder()
+                .code(404)
+                .message("There's no such element in our data")
+                .build();
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleServerError(){
-        return "There is a problem with the server!";
+    public ResponseDto handleServerError(){
+        return ResponseDto.builder()
+                .code(500)
+                .message("There's a problem with our server")
+                .build();
     }
 
 

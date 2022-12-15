@@ -1,56 +1,67 @@
 package com.example.bankSoftware.services.impl;
 
 import com.example.bankSoftware.dtos.TransactionDto;
-import com.example.bankSoftware.dtos.TransferAmountDto;
 import com.example.bankSoftware.entities.Account;
 import com.example.bankSoftware.entities.Transaction;
-import com.example.bankSoftware.mappers.AccountMapper;
-import com.example.bankSoftware.mappers.TransactionMapper;
-import com.example.bankSoftware.repositories.AccountRepository;
-import com.example.bankSoftware.repositories.TransactionRepository;
 import com.example.bankSoftware.services.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 public class TransactionServiceImpl implements TransactionService {
 
-    @Override
-    public void makeTransaction(Integer senderId, Integer receiverId, BigDecimal amount) {
-
-
-    }
+    @PersistenceContext
+    EntityManager em;
 
     @Override
-    public List<TransactionDto> findAll() {
-        return transactionMapper.allToDtos(transactionRepository.findAll());
-    }
+    @Transactional
+    public void makeTransaction(//
+                Integer sourceAccountId, Integer destinationAccountId, BigDecimal transactionAmount) {
+        Account sourceAccount = em.find(Account.class, sourceAccountId);
 
+        Account destinationAccount = em.find(Account.class, destinationAccountId);
+
+        createTransaction(transactionAmount, sourceAccount, destinationAccount);
+
+        createTransaction(transactionAmount.negate(), destinationAccount, sourceAccount);
+    }
+    //todo podrebna i parametur za smetka
     @Override
-    public List<TransactionDto> findById(Integer id) {
-        List<Transaction> transactions = new ArrayList<>();
-
-            if (accountRepository.findById(id).isPresent()) {
-                Account account = accountRepository.findById(id).get();
-                transactionRepository.findAll().forEach(transaction -> {
-                    if (transaction.getSource().getId().equals(id)) {
-                        transactions.add(transaction);
-                    }
-                });
-                return transactionMapper.allToDtos(transactions);
-            } else {
-                throw new NoSuchElementException();
-            }
-
-        }
+    public List<Transaction> findAll() {
+        return em.createQuery("select a from Transaction as a")
+                .setMaxResults(100).getResultList();
     }
+    @Override
+    public List<Transaction> findById(Integer accountId) {
+       return em.createQuery("from Transaction where sourceAccount.id = ?1 " +
+                       "order by creationDate desc").
+               setParameter(1, accountId).setMaxResults(100).getResultList();
+    }
+
+    /**
+     * pobeda
+     * @param transactionAmount
+     * @param sourceAccount
+     * @param destinationAccount
+     */
+    private void createTransaction(BigDecimal transactionAmount, Account sourceAccount,
+                                   Account destinationAccount) {
+        sourceAccount.addBalance(transactionAmount);
+        em.persist(Transaction.builder().
+                sourceAccount(sourceAccount)
+                .destinationAccount(destinationAccount)
+                .transactionAmount(transactionAmount)
+                .creationDate(LocalDateTime.now())
+                .build());
+    }
+
+}
 
 
 

@@ -5,10 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transactions", indexes = {
+        @Index(name = "idx_source_account", columnList = "source_account_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
