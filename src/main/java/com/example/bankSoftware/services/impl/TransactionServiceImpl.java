@@ -44,12 +44,6 @@ public class TransactionServiceImpl implements TransactionService {
                setParameter(1, accountId).setMaxResults(100).getResultList();
     }
 
-    /**
-     * pobeda
-     * @param transactionAmount
-     * @param sourceAccount
-     * @param destinationAccount
-     */
     private void createTransaction(BigDecimal transactionAmount, Account sourceAccount,
                                    Account destinationAccount) {
         sourceAccount.addBalance(transactionAmount);

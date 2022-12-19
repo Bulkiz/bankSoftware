@@ -2,12 +2,9 @@ package com.example.bankSoftware.controllers;
 
 import com.example.bankSoftware.dtos.AccountDto;
 import com.example.bankSoftware.entities.Account;
-import com.example.bankSoftware.services.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,10 +1,8 @@
 package com.example.bankSoftware.controllers;
 
-import com.example.bankSoftware.Config;
 import com.example.bankSoftware.dtos.ResponseDto;
 import com.example.bankSoftware.services.AccountService;
 import com.example.bankSoftware.services.TransactionService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

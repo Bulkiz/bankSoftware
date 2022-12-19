@@ -15,7 +15,7 @@ public class AccountServiceImpl implements AccountService {
 
     @PersistenceContext
     EntityManager em;
-
+    @Transactional
     @Override
     public Account createAccount(Account newAccount) {
         newAccount.setId(null);
