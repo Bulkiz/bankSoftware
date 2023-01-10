@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TransactionService {
     void makeTransaction(Integer senderId, Integer receiverId, BigDecimal amount);
-    List<Transaction> findAll();
-    List<Transaction> findById(Integer id);
+    List<Transaction> findAll() throws InterruptedException;
+    List<Transaction> findById(Integer id) throws InterruptedException;
 }

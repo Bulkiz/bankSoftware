@@ -23,6 +23,14 @@ public class AccountServiceImpl implements AccountService {
         em.persist(newAccount);
         return newAccount;
     }
+
+    @Transactional
+    @Override
+    public Account updateAccount(Account account){
+        account.setCreateDate(LocalDateTime.now());
+        em.merge(account);
+        return account;
+    }
     @Override
     public List<Account> findAll() {
       return em.createNamedQuery("Account.findAll", Account.class)

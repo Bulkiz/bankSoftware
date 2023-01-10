@@ -14,4 +14,6 @@ public interface AccountService {
     List<Account> findAll();
 
     BigDecimal getBalance(Integer id);
+
+    Account updateAccount(Account account);
 }

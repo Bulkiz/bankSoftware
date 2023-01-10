@@ -20,14 +20,19 @@ public class AccountController extends BaseController {
                         AccountDto.class),
                 HttpStatus.CREATED);
     }
-
+    @PutMapping
+    public ResponseEntity<AccountDto> updateAccount(@RequestBody AccountDto accountDto) {
+        return new ResponseEntity<>(modelMapper.map
+                (accountService.updateAccount(modelMapper.map(accountDto, Account.class)),
+                        AccountDto.class),
+                HttpStatus.CREATED);
+    }
     @GetMapping
     public List<AccountDto> findAllAccounts() {
         return accountService.findAll().parallelStream().
                 map(account -> modelMapper.map(account, AccountDto.class))
                 .collect(Collectors.toList());
     }
-
     @GetMapping("/{id}")
     public BigDecimal getBalance(@PathVariable Integer id) {
         return accountService.getBalance(id);

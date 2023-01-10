@@ -1,12 +1,12 @@
 package com.example.bankSoftware.services.impl;
 
-import com.example.bankSoftware.dtos.TransactionDto;
 import com.example.bankSoftware.entities.Account;
 import com.example.bankSoftware.entities.Transaction;
 import com.example.bankSoftware.services.TransactionService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -21,11 +21,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void makeTransaction(//
+    public void makeTransaction(
                 Integer sourceAccountId, Integer destinationAccountId, BigDecimal transactionAmount) {
-        Account sourceAccount = em.find(Account.class, sourceAccountId);
+        Account sourceAccount = em.find(Account.class, sourceAccountId, LockModeType.PESSIMISTIC_WRITE);
 
-        Account destinationAccount = em.find(Account.class, destinationAccountId);
+        Account destinationAccount = em.find(Account.class, destinationAccountId, LockModeType.PESSIMISTIC_WRITE);
 
         createTransaction(transactionAmount, sourceAccount, destinationAccount);
 
@@ -33,12 +33,14 @@ public class TransactionServiceImpl implements TransactionService {
     }
     //todo podrebna i parametur za smetka
     @Override
-    public List<Transaction> findAll() {
+    public List<Transaction> findAll() throws InterruptedException {
+        Thread.sleep(10000);
         return em.createQuery("select a from Transaction as a")
                 .setMaxResults(100).getResultList();
     }
     @Override
-    public List<Transaction> findById(Integer accountId) {
+    public List<Transaction> findById(Integer accountId) throws InterruptedException {
+        Thread.sleep(10000);
        return em.createQuery("from Transaction where sourceAccount.id = ?1 " +
                        "order by creationDate desc").
                setParameter(1, accountId).setMaxResults(100).getResultList();
