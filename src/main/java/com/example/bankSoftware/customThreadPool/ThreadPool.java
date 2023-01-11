@@ -1,7 +1,6 @@
 package com.example.bankSoftware.customThreadPool;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
@@ -21,8 +20,16 @@ public class ThreadPool {
     }
 
     public <T> Future<T> submitTask(Callable<T> task) throws InterruptedException {
-        FutureTask<T> task1 = new FutureTask<T>(task);
+        FutureTask<T> task1 = new FutureTask<>(task);
         queue.enqueue(task1);
         return task1;
+    }
+
+    public void submitTask(Runnable task) {
+        try {
+            queue.enqueue(task);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -13,11 +13,16 @@ import java.util.stream.Collectors;
 public class TransactionController extends BaseController{
 
     @PostMapping
-    public ResponseDto makeTransaction(@RequestBody TransferAmountDto transferAmountDto){
-        transactionService.makeTransaction(transferAmountDto.getSourceAccountId(),
-                transferAmountDto.getDestinationAccountId(),
-                transferAmountDto.getTransferAmount());
-
+    public ResponseDto makeTransaction(@RequestBody TransferAmountDto transferAmountDto) {
+        threadPool.submitTask(() -> {
+            try {
+                transactionService.makeTransaction(transferAmountDto.getSourceAccountId(),
+                        transferAmountDto.getDestinationAccountId(),
+                        transferAmountDto.getTransferAmount());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return ResponseDto.builder()
                 .code(200)
                 .message(String.format("You have successfully transferred %s!", transferAmountDto.getTransferAmount()))
@@ -26,7 +31,6 @@ public class TransactionController extends BaseController{
 
     @GetMapping
     public List<TransactionDto> findAllTransactions() throws InterruptedException, ExecutionException {
-
        return threadPool.submitTask(() -> transactionService.findAll().parallelStream().
                 map(transaction -> modelMapper.map(transaction, TransactionDto.class))
                 .collect(Collectors.toList())).get();

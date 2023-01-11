@@ -22,14 +22,17 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void makeTransaction(
-                Integer sourceAccountId, Integer destinationAccountId, BigDecimal transactionAmount) {
+            Integer sourceAccountId, Integer destinationAccountId,
+            BigDecimal transactionAmount) throws InterruptedException {
+
         Account sourceAccount = em.find(Account.class, sourceAccountId, LockModeType.PESSIMISTIC_WRITE);
 
         Account destinationAccount = em.find(Account.class, destinationAccountId, LockModeType.PESSIMISTIC_WRITE);
-
+        Thread.sleep(2000);
         createTransaction(transactionAmount, sourceAccount, destinationAccount);
 
         createTransaction(transactionAmount.negate(), destinationAccount, sourceAccount);
+
     }
     //todo podrebna i parametur za smetka
     @Override
