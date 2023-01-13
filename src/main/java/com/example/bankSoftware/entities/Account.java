@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "accounts")
-@NamedQuery(name = "Account.findAll", query = "select a from Account as a order by a.firstName, a.lastName")
+@NamedQuery(name = "Account.findAll", query = "select a from Account as a order by a.id")
 @Getter
 @Setter
 @NoArgsConstructor

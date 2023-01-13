@@ -27,6 +27,7 @@ public class AccountController extends BaseController {
                         AccountDto.class),
                 HttpStatus.CREATED);
     }
+
     @GetMapping
     public List<AccountDto> findAllAccounts() {
         return accountService.findAll().parallelStream().
