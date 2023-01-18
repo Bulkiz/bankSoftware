@@ -28,14 +28,14 @@ public class BaseController {
                 .build();
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseDto handleServerError(){
-        return ResponseDto.builder()
-                .code(500)
-                .message("There's a problem with our server")
-                .build();
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseDto handleServerError(){
+//        return ResponseDto.builder()
+//                .code(500)
+//                .message("There's a problem with our server")
+//                .build();
+//    }
 
 
 }
